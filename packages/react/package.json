@@ -1,6 +1,6 @@
 {
   "name": "@react-effect/react",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "publishConfig": {
     "access": "public"
@@ -30,7 +30,7 @@
     "react": "^18.2.0"
   },
   "dependencies": {
-    "@react-effect/jotai": "^0.1.1"
+    "@react-effect/jotai": "^0.1.2"
   },
   "gitHead": "249dab5190e3c98b6c25ceeb835d7d3a5fb11074"
 }

@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "react-effect:clean": "cd $INIT_CWD && rm -rf dist/",
+    "react-effect:clean": "cd $INIT_CWD && rm -rf dist/ *.tsbuildinfo",
     "react-effect:tsc": "cd $INIT_CWD && tsc"
   },
   "devDependencies": {

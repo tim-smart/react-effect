@@ -25,4 +25,9 @@ import {
   Suspense,
   ReactNode,
   Component,
+  PropsWithRef,
+  PropsWithoutRef,
+  PropsWithChildren,
+  ComponentPropsWithRef,
+  ComponentPropsWithoutRef,
 } from "react"

@@ -1,5 +1,6 @@
 {
   "name": "@react-effect/react",
+  "version": "0.0.0",
   "type": "module",
   "exports": {
     ".": {
@@ -22,6 +23,6 @@
     "react": "^18.2.0"
   },
   "dependencies": {
-    "@react-effect/jotai": "^0.0.1"
+    "@react-effect/jotai": "^0.0.0"
   }
 }

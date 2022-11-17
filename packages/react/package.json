@@ -30,5 +30,5 @@
   "dependencies": {
     "@react-effect/jotai": "^0.1.1"
   },
-  "gitHead": "59b74830c0b88d0bcab75675d1681b06faeacb8b"
+  "gitHead": "f44c8c9dbd696ea5c009b77375f5ca01df0bba64"
 }

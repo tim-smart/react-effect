@@ -3,8 +3,7 @@
   "version": "0.1.1",
   "type": "module",
   "publishConfig": {
-    "access": "public",
-    "directory": "dist"
+    "access": "public"
   },
   "exports": {
     ".": {
@@ -30,5 +29,5 @@
   "dependencies": {
     "@react-effect/jotai": "^0.1.1"
   },
-  "gitHead": "f44c8c9dbd696ea5c009b77375f5ca01df0bba64"
+  "gitHead": "249dab5190e3c98b6c25ceeb835d7d3a5fb11074"
 }

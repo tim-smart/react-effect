@@ -2,6 +2,10 @@
   "name": "@react-effect/jotai",
   "version": "0.1.0",
   "type": "module",
+  "publishConfig": {
+    "access": "public",
+    "directory": "dist"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.js"
@@ -12,7 +16,7 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "yarn react-effect:tsc",
+    "build": "yarn react-effect:tsc -b tsconfig.json",
     "prepublishOnly": "yarn clean && yarn build"
   },
   "packageManager": "yarn@3.3.0",
@@ -24,5 +28,5 @@
     "@effect/core": "^0.0.16",
     "jotai": "^1.9.2"
   },
-  "gitHead": "271ff7791abd3268979ede02494fbc8bf74b3547"
+  "gitHead": "b9a0c9769d555b68ab2c65d6c84441de974db6b5"
 }

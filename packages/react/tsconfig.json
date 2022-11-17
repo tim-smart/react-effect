@@ -1,9 +1,22 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "_src",
     "tsPlusConfig": "../../tsplus.config.json",
     "tsBuildInfoFile": "tsconfig.tsbuildinfo"
   },
+  "include": [
+    "_src/**/*"
+  ],
+  "exclude": [
+    "../jotai/**/*"
+  ],
+  "references": [
+    {
+      "path": "../jotai/tsconfig.json"
+    }
+  ],
   "ts-node": {
     "files": true,
     "require": [

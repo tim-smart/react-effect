@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "composite": true,
     "moduleDetection": "force",
     "target": "ESNext",
     "lib": [

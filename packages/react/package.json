@@ -15,7 +15,7 @@
     }
   },
   "scripts": {
-    "clean": "rm -rf dist",
+    "clean": "yarn react-effect:clean",
     "build": "yarn react-effect:tsc -b tsconfig.json",
     "prepublishOnly": "yarn clean && yarn build"
   },
@@ -30,5 +30,5 @@
   "dependencies": {
     "@react-effect/jotai": "^0.1.1"
   },
-  "gitHead": "ba45c856bc0cd2e49f9fbd7b52e4db6acafe256c"
+  "gitHead": "59b74830c0b88d0bcab75675d1681b06faeacb8b"
 }

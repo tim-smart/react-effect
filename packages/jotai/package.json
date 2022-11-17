@@ -1,0 +1,26 @@
+{
+  "name": "@react-effect/jotai",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./*": {
+      "import": "./dist/*.js"
+    }
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "yarn react-effect:tsc"
+  },
+  "packageManager": "yarn@3.3.0",
+  "peerDependencies": {
+    "@effect/core": "*",
+    "jotai": "*"
+  },
+  "devDependencies": {
+    "@effect/core": "^0.0.16",
+    "jotai": "^1.9.2"
+  }
+}

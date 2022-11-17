@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "tsPlusConfig": "../../tsplus.config.json",
+    "tsBuildInfoFile": "tsconfig.tsbuildinfo"
+  },
+  "ts-node": {
+    "files": true,
+    "require": [
+      "tsconfig-paths/register"
+    ]
+  }
+}

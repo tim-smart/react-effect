@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "tsPlusConfig": "../../tsplus.config.json",
+    "tsBuildInfoFile": "tsconfig.tsbuildinfo"
+  },
+  "ts-node": {
+    "files": true,
+    "require": [
+      "tsconfig-paths/register"
+    ]
+  }
+}

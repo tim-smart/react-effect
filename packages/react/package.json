@@ -1,0 +1,27 @@
+{
+  "name": "@react-effect/react",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    },
+    "./*": {
+      "import": "./dist/*.js"
+    }
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "yarn react-effect:tsc"
+  },
+  "packageManager": "yarn@3.3.0",
+  "peerDependencies": {
+    "react": "*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.25",
+    "react": "^18.2.0"
+  },
+  "dependencies": {
+    "@react-effect/jotai": "^0.0.1"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "moduleDetection": "force",
+    "target": "ESNext",
+    "lib": [
+      "ES2021"
+    ],
+    "moduleResolution": "node",
+    "module": "ES6",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "allowJs": false,
+    "skipLibCheck": true,
+    "incremental": true,
+    "inlineSourceMap": true,
+    "declaration": true,
+    "removeComments": false,
+    "noEmit": false,
+    "paths": {
+      "@react-effect/jotai": [
+        "./packages/jotai/_src/index.ts"
+      ],
+      "@react-effect/jotai/*": [
+        "./packages/jotai/_src/*"
+      ],
+      "@react-effect/react": [
+        "./packages/react/_src/index.ts"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

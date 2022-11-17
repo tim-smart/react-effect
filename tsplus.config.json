@@ -1,0 +1,9 @@
+{
+  "importMap": {
+    "^(.*)/packages/([^/]*)/_src(.*)/index\\.ts$": "@react-effect/$2$3",
+    "^(.*)/packages/([^/]*)/_src(.*)\\.ts$": "@react-effect/$2$3"
+  },
+  "traceMap": {
+    "^(.*)/packages/([^/]*)/(.*)$": "(@react-effect/$2) $3"
+  }
+}

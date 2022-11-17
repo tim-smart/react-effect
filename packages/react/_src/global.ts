@@ -1,3 +1,6 @@
+/**
+ * @tsplus global
+ */
 import "@react-effect/jotai/global"
 
 /**

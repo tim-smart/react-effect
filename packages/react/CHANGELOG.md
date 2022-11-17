@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/tim-smart/react-effect/compare/@react-effect/react@0.3.0...@react-effect/react@0.3.1) (2022-11-17)
+
+**Note:** Version bump only for package @react-effect/react
+
 # [0.3.0](https://github.com/tim-smart/react-effect/compare/@react-effect/react@0.2.0...@react-effect/react@0.3.0) (2022-11-17)
 
 ### Features

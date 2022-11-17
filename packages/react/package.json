@@ -12,7 +12,8 @@
   },
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "yarn react-effect:tsc"
+    "build": "yarn react-effect:tsc",
+    "prepublishOnly": "yarn clean && yarn build"
   },
   "packageManager": "yarn@3.3.0",
   "peerDependencies": {
@@ -24,5 +25,6 @@
   },
   "dependencies": {
     "@react-effect/jotai": "^0.1.0"
-  }
+  },
+  "gitHead": "271ff7791abd3268979ede02494fbc8bf74b3547"
 }

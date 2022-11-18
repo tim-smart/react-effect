@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback } from "react"
 
 type RuntimeEnv<A> = A extends Runtime<infer R> ? R : never
 
@@ -56,6 +56,77 @@ export const createEffectHook =
     return {
       result,
       run,
-      pending: pending,
+      pending,
+    }
+  }
+
+export const createStreamHook =
+  <R extends Runtime<any>>(runtimeAtom: Atom<R> | Atom<Promise<R>>) =>
+  <E, A>(createStream: LazyArg<Stream<RuntimeEnv<R>, E, A>>, deps?: any[]) => {
+    const runtime = useAtomValue(runtimeAtom)
+
+    const stream = useMemo(createStream, deps)
+
+    const scope = useMemo(() => Scope.make.unsafeRunSync(), [stream])
+    useEffect(
+      () => () => scope.close(Exit.die("cleanup")).unsafeRunAsync(),
+      [scope]
+    )
+
+    const pullPromise = useMemo(() => {
+      return runtime.unsafeRunPromise(scope.use(stream.rechunk(1).toPull))
+    }, [runtime, stream, scope])
+
+    const [initialized, setInitialized] = useState(false)
+    const [result, setResult] = useState(null as A)
+    const [loading, setLoading] = useState(false)
+    const [complete, setComplete] = useState(false)
+
+    const [promise, onInit] = useMemo(() => {
+      let resolved = false
+      let resolve: () => void
+      const promise = new Promise<void>((r) => {
+        resolve = r
+      })
+      return [
+        promise,
+        () => {
+          if (resolved) return
+          resolved = true
+          setInitialized(true)
+          resolve()
+        },
+      ] as const
+    }, [setInitialized])
+
+    const pull = useCallback(async () => {
+      if (loading || complete) return
+
+      setLoading(true)
+      const pull = await pullPromise
+      const e = await runtime.unsafeRunPromise(pull.either)
+      setLoading(false)
+
+      if (e.isLeft()) {
+        if (e.left.isNone()) {
+          setComplete(true)
+        } else {
+          throw e.left.value
+        }
+      } else {
+        setResult(e.right.unsafeHead)
+        onInit()
+      }
+    }, [pullPromise, runtime, complete, loading])
+
+    if (!initialized) {
+      throw promise
+    }
+
+    return {
+      result,
+      loading,
+      complete,
+      pull,
     }
   }

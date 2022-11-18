@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/tim-smart/react-effect/compare/@react-effect/react@0.3.2...@react-effect/react@0.4.0) (2022-11-18)
+
+### Features
+
+- pull based streaming ([4148171](https://github.com/tim-smart/react-effect/commit/414817132702976c6550062f6cc1cdd6cbe52e49))
+
 ## [0.3.2](https://github.com/tim-smart/react-effect/compare/@react-effect/react@0.3.1...@react-effect/react@0.3.2) (2022-11-17)
 
 **Note:** Version bump only for package @react-effect/react

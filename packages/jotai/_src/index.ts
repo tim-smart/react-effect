@@ -1,4 +1,4 @@
-import { atom, Getter } from "jotai"
+import { atom, Getter, Setter } from "jotai"
 import { RESET } from "jotai/utils"
 
 type RESET = typeof RESET
@@ -28,25 +28,40 @@ export const atomWithRef = <A>(
   return atom((get) => get(get(atomInAtom)))
 }
 
+export interface AtomWithStreamOpts {
+  keepAlive?: boolean
+}
+
 export const createAtomWithStream =
   <R extends Runtime<any>>(createRuntime: (get: Getter) => R) =>
   <E, A>(create: (get: Getter) => Stream<RuntimeEnv<R>, E, A>) => {
-    const resetCount = atom(0)
-
     const atomInAtom = atom(async (get) => {
-      get(resetCount)
-
       const runtime = createRuntime(get)
-      const scope = Scope.make.unsafeRunSync()
-      const stream = create(get)
-      const pull = await pipe(
-        scope.use(stream.rechunk(1).toPull),
-        runtime.unsafeRunPromise
-      )
+
+      const make = async () => {
+        const scope = Scope.make.unsafeRunSync()
+        const stream = create(get)
+        const pull = await pipe(
+          scope.use(stream.rechunk(1).toPull),
+          runtime.unsafeRunPromise
+        )
+        const close = () =>
+          scope.close(Exit.interrupt(FiberId.none)).unsafeRunPromise()
+
+        return { pull: pull.either, close }
+      }
+
+      let handle = await make()
+      const reset = async (set: Setter) => {
+        handle.close()
+        handle = await make()
+        set(completeAtom, false)
+        set(valueAtom)
+      }
 
       type Result = Either<Maybe<E>, Chunk<A>>
       const resultAtom = atom<Result>(
-        runtime.unsafeRunPromise(pull.either) as any as Result
+        runtime.unsafeRunPromise(handle.pull) as any as Result
       )
       const loadingAtom = atom(false)
       const completeAtom = atom(false)
@@ -66,7 +81,7 @@ export const createAtomWithStream =
           if (complete) return
 
           set(loadingAtom, true)
-          runtime.unsafeRunPromise(pull.either).then((e) => {
+          runtime.unsafeRunPromise(handle.pull).then((e) => {
             set(loadingAtom, false)
 
             if (e.isLeft()) {
@@ -82,7 +97,7 @@ export const createAtomWithStream =
         }
       )
 
-      return [valueAtom, loadingAtom, completeAtom, scope] as const
+      return [valueAtom, loadingAtom, completeAtom, reset] as const
     })
 
     return atom(
@@ -95,20 +110,13 @@ export const createAtomWithStream =
           complete: get(completeAtom),
         }
       },
-      (get, set, update: void | RESET) => {
-        const [valueAtom, , , scope] = get(atomInAtom)
+      async (get, set, update: void | RESET) => {
+        const [valueAtom, , , reset] = get(atomInAtom)
 
         if (update !== RESET) {
           set(valueAtom)
         } else {
-          scope
-            .close(Exit.die("reset"))
-            .tap(() =>
-              Effect.sync(() => {
-                set(resetCount, (i) => i + 1)
-              })
-            )
-            .unsafeRunAsync()
+          await reset(set)
         }
       }
     )

@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
 
 type RuntimeEnv<A> = A extends Runtime<infer R> ? R : never
 
@@ -24,7 +24,6 @@ export const createEffectHook =
           cancelRef.current.value()
         }
         setPending(true)
-        setResult(Maybe.none)
 
         const cancel = runtime.unsafeRunWith(createEffect(...args), (exit) => {
           reset()
@@ -62,7 +61,10 @@ export const createEffectHook =
 
 export const createStreamHook =
   <R extends Runtime<any>>(runtimeAtom: Atom<R> | Atom<Promise<R>>) =>
-  <E, A>(createStream: LazyArg<Stream<RuntimeEnv<R>, E, A>>, deps?: any[]) => {
+  <E, A>(
+    createStream: LazyArg<Stream<RuntimeEnv<R>, E, A>>,
+    deps: any[] = []
+  ) => {
     const runtime = useAtomValue(runtimeAtom)
 
     const stream = useMemo(createStream, deps)
@@ -73,55 +75,37 @@ export const createStreamHook =
       [scope]
     )
 
-    const pullPromise = useMemo(() => {
-      return runtime.unsafeRunPromise(scope.use(stream.rechunk(1).toPull))
-    }, [runtime, stream, scope])
+    const pullPromise = useMemo(
+      () => runtime.unsafeRunPromise(scope.use(stream.rechunk(1).toPull)),
+      [runtime, stream, scope]
+    )
 
-    const [initialized, setInitialized] = useState(false)
-    const [result, setResult] = useState(null as A)
+    const [result, setResult] = useState<Maybe<Either<E, A>>>(Maybe.none)
     const [loading, setLoading] = useState(false)
     const [complete, setComplete] = useState(false)
-
-    const [promise, onInit] = useMemo(() => {
-      let resolved = false
-      let resolve: () => void
-      const promise = new Promise<void>((r) => {
-        resolve = r
-      })
-      return [
-        promise,
-        () => {
-          if (resolved) return
-          resolved = true
-          setInitialized(true)
-          resolve()
-        },
-      ] as const
-    }, [setInitialized])
 
     const pull = useCallback(async () => {
       if (loading || complete) return
 
       setLoading(true)
       const pull = await pullPromise
-      const e = await runtime.unsafeRunPromise(pull.either)
+      const next = await runtime.unsafeRunPromise(pull.either)
       setLoading(false)
 
-      if (e.isLeft()) {
-        if (e.left.isNone()) {
+      if (next.isLeft()) {
+        if (next.left.isNone()) {
           setComplete(true)
         } else {
-          throw e.left.value
+          setResult(Maybe.some(Either.left(next.left.value)))
         }
       } else {
-        setResult(e.right.unsafeHead)
-        onInit()
+        setResult(Maybe.some(Either.right(next.right.unsafeHead)))
       }
     }, [pullPromise, runtime, complete, loading])
 
-    if (!initialized) {
-      throw promise
-    }
+    useEffect(() => {
+      pull()
+    }, [stream])
 
     return {
       result,

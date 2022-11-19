@@ -71,13 +71,13 @@ export const createStreamHook =
 
     const scope = useMemo(() => Scope.make.unsafeRunSync(), [stream])
     useEffect(
-      () => () => scope.close(Exit.die("cleanup")).unsafeRunAsync(),
+      () => () => scope.close(Exit.interrupt(FiberId.none)).unsafeRunAsync(),
       [scope]
     )
 
     const pullPromise = useMemo(
       () => runtime.unsafeRunPromise(scope.use(stream.rechunk(1).toPull)),
-      [runtime, stream, scope]
+      [stream]
     )
 
     const [result, setResult] = useState<Maybe<Either<E, A>>>(Maybe.none)
@@ -101,7 +101,7 @@ export const createStreamHook =
       } else {
         setResult(Maybe.some(Either.right(next.right.unsafeHead)))
       }
-    }, [pullPromise, runtime, complete, loading])
+    }, [pullPromise, complete, loading])
 
     useEffect(() => {
       pull()

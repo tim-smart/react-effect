@@ -67,20 +67,21 @@ export const createAtomWithStream =
       const completeAtom = atom(false)
 
       const valueAtom = atom(
-        (get) =>
+        (get): Promise<Either<E, A>> =>
           get(resultAtom).fold(
             (m) =>
               m.fold(
-                () => new Promise<A>(() => {}),
-                (e) => Promise.reject<A>(e)
+                () => new Promise(() => {}),
+                (e) => Promise.reject(Either.left(e))
               ),
-            (c) => c.unsafeHead
+            (c) => Either.right(c.unsafeHead)
           ),
         (get, set, _update: void) => {
           const complete = get(completeAtom)
           if (complete) return
 
           set(loadingAtom, true)
+
           runtime.unsafeRunPromise(handle.pull).then((e) => {
             set(loadingAtom, false)
 
@@ -105,7 +106,7 @@ export const createAtomWithStream =
         const [valueAtom, loadingAtom, completeAtom] = get(atomInAtom)
 
         return {
-          data: get(valueAtom),
+          result: get(valueAtom),
           loading: get(loadingAtom),
           complete: get(completeAtom),
         }
@@ -130,7 +131,7 @@ export const createAtomWithEffect =
     atom((get) => {
       const runtime = createRuntime(get)
       const effect = create(get)
-      return runtime.unsafeRunPromise(effect)
+      return runtime.unsafeRunPromise(effect.either)
     })
 
 export const runtimeScopeAtom = atom(() => Scope.make.unsafeRunSync())

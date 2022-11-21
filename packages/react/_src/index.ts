@@ -69,7 +69,7 @@ export const createStreamHook =
 
     const stream = useMemo(createStream, deps)
 
-    const scope = useMemo(() => Scope.make.unsafeRunSync(), [stream])
+    const scope = useMemo(() => Scope.make.unsafeRunSync(), [])
     useEffect(
       () => () => scope.close(Exit.interrupt(FiberId.none)).unsafeRunAsync(),
       [scope]
@@ -105,7 +105,7 @@ export const createStreamHook =
 
     useEffect(() => {
       pull()
-    }, [stream])
+    }, [])
 
     return {
       result,
